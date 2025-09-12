@@ -1,6 +1,6 @@
 # ASP.NET Core Bundler Application
 
-A comprehensive bundling and minification solution for ASP.NET Core applications, featuring multiple bundling strategies and build tools integration.
+A comprehensive bundling and minification solution for ASP.NET Core applications, featuring multiple bundling strategies and build tools integration.The project serves as a showcase for different bundling strategies including build-time and runtime optimization techniques for CSS and JavaScript files.
 
 # 🚀 Live page
 
@@ -9,6 +9,27 @@ A comprehensive bundling and minification solution for ASP.NET Core applications
 ## Developer 
 
 **Reaishma N**
+
+
+# System Architecture
+
+## Frontend Architecture
+
+The frontend follows a traditional web architecture with server-rendered pages and static assets:
+
+- **Static Asset Organization**: Assets are organized in the standard `wwwroot` folder structure with separate directories for CSS and JavaScript files
+- **Bundling Strategy**: Implements a dual bundling approach using both build-time and runtime bundling for maximum flexibility
+- **UI Framework**: Uses Bootstrap for responsive design and basic UI components
+- **Custom Styling**: Site-specific styles in `site.css` with custom branding and layout modifications
+
+## Backend Architecture
+
+Built on ASP.NET Core 7.0 with a focus on asset optimization:
+
+- **Framework**: ASP.NET Core 7.0 with MVC pattern for web application structure
+- **Asset Pipeline**: Multiple bundling and minification strategies working in tandem
+- **Build Integration**: MSBuild integration for automated asset processing during compilation
+- **Static File Serving**: Built-in ASP.NET Core static file middleware for serving optimized assets
 
 ## Features
 
@@ -86,6 +107,18 @@ npm run dev
 npm run prod
 dotnet publish -c Release
 ```
+## Asset Optimization Strategy
+
+The application implements a comprehensive asset optimization approach:
+
+- **Build-Time Bundling**: Uses BuildBundlerMinifier for creating minified bundles during compilation
+- **Runtime Bundling**: LigerShark WebOptimizer provides dynamic bundling with caching and versioning
+- **Configuration-Driven**: `bundleconfig.json` defines specific bundling rules for different asset combinations
+- **Cache Busting**: Automatic versioning for cache invalidation in production environments
+
+The bundling configuration creates multiple output targets:
+- Individual minified files (`site.min.css`, `site.min.js`)
+- Combined bundles (`bundle.min.css`, `bundle.min.js`) that include both custom and Bootstrap assets
 
 ## Bundling Strategies
 
@@ -152,6 +185,29 @@ The application automatically switches between development and production assets
 - **Caching**: Browser cache optimization with versioning
 - **Compression**: Gzip compression enabled via web.config
 - **CDN Support**: Configurable for content delivery networks
+- **Development vs Production**: Different optimization levels based on environment
+
+
+## External Dependencies
+
+### NuGet Packages
+
+- **BuildBundlerMinifier (3.2.449)**: Build-time asset bundling and minification
+- **BundlerMinifier.Core (3.2.449)**: Core bundling functionality and MSBuild integration
+- **LigerShark.WebOptimizer.Core (3.0.384)**: Runtime asset optimization and bundling
+- **Microsoft.Web.LibraryManager.Build (2.1.175)**: Client-side library management during build
+
+### Third-Party Libraries
+
+- **Bootstrap**: CSS framework for responsive design and UI components
+- **NUglify**: JavaScript and CSS minification engine used by bundling tools
+- **Newtonsoft.Json**: JSON serialization for configuration and bundling metadata
+
+### Build Tools
+
+- **MSBuild Integration**: Automatic bundling during project compilation
+- **Static Web Assets**: ASP.NET Core's built-in system for managing and serving static files
+- **LibraryManager**: For managing client-side dependencies and updates
 
 ## Browser Support
 

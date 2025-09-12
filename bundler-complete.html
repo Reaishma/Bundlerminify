@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASP.NET Core Bundler - Complete Single File</title>
+    
+    <style>
+        /* Bootstrap CSS - Enhanced version */
+        .container{max-width:1140px;margin:0 auto;padding:0 15px}
+        .row{display:flex;flex-wrap:wrap;margin:0 -15px}
+        .col-md-4,.col-md-6{padding:0 15px;flex:1}
+        .col-md-8{padding:0 15px;flex:0 0 66.666667%}
+        .col-md-12{padding:0 15px;flex:0 0 100%}
+        @media (min-width:768px){.col-md-4{flex:0 0 33.333333%}.col-md-6{flex:0 0 50%}}
+        @media (max-width:767px){.row{flex-direction:column}.col-md-4,.col-md-6,.col-md-8,.col-md-12{flex:1;margin-bottom:1rem}}
+        .navbar{padding:0.5rem 1rem;background-color:#fff!important;border-bottom:1px solid #dee2e6;position:relative}
+        .navbar-brand{font-size:1.25rem;text-decoration:none}
+        .navbar-nav{display:flex;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+        .nav-item{margin:0 0.5rem}
+        .nav-link{color:#333;text-decoration:none;padding:0.5rem;cursor:pointer;transition:all 0.3s}
+        .nav-link:hover,.nav-link.active{color:#007bff;background-color:#f8f9fa;border-radius:4px}
+        .btn{display:inline-block;padding:0.375rem 0.75rem;margin-bottom:0;font-size:1rem;line-height:1.5;text-align:center;text-decoration:none;vertical-align:middle;cursor:pointer;border:1px solid transparent;border-radius:0.25rem;transition:all 0.3s}
+        .btn-primary{color:#fff;background-color:#007bff;border-color:#007bff}
+        .btn-success{color:#fff;background-color:#28a745;border-color:#28a745}
+        .btn-info{color:#fff;background-color:#17a2b8;border-color:#17a2b8}
+        .text-center{text-align:center}
+        .text-left{text-align:left}
+        .text-success{color:#28a745}
+        .text-info{color:#17a2b8}
+        .text-warning{color:#ffc107}
+        .text-dark{color:#333}
+        .mt-3{margin-top:1rem}
+        .mt-4{margin-top:1.5rem}
+        .mt-5{margin-top:3rem}
+        .mb-2{margin-bottom:0.5rem}
+        .mb-3{margin-bottom:1rem}
+        .mb-4{margin-bottom:1.5rem}
+        .pb-3{padding-bottom:1rem}
+        .p-3{padding:1rem}
+        .p-4{padding:1.5rem}
+        .border{border:1px solid #dee2e6}
+        .border-bottom{border-bottom:1px solid #dee2e6}
+        .border-top{border-top:1px solid #dee2e6!important}
+        .rounded{border-radius:0.25rem}
+        .box-shadow{box-shadow:0 0.125rem 0.25rem rgba(0,0,0,0.075)}
+        .footer{color:#6c757d}
+        .navbar-expand-sm .navbar-collapse{display:flex!important;flex-basis:auto}
+        .navbar-toggleable-sm .navbar-collapse{display:flex!important;flex-basis:auto}
+        .navbar-light .navbar-brand{color:rgba(0,0,0,.9)}
+        .bg-white{background-color:#fff!important}
+        .bg-light{background-color:#f8f9fa!important}
+        .bg-primary{background-color:#007bff!important}
+        .text-muted{color:#6c757d!important}
+        .text-white{color:#fff!important}
+        .d-none{display:none!important}
+        .d-block{display:block!important}
+        .d-sm-inline-flex{display:inline-flex!important}
+        .flex-sm-row-reverse{flex-direction:row-reverse!important}
+        .flex-grow-1{flex-grow:1!important}
+        .list-unstyled{padding-left:0;list-style:none}
+        .display-4{font-size:3.5rem;font-weight:300;line-height:1.2}
+        .card{position:relative;display:flex;flex-direction:column;min-width:0;background-color:#fff;border:1px solid #dee2e6;border-radius:0.25rem}
+        .card-body{flex:1 1 auto;padding:1rem}
+        .card-title{margin-bottom:0.75rem;font-size:1.25rem;font-weight:500}
+        .card-text{margin-bottom:1rem}
+        .badge{display:inline-block;padding:0.25em 0.4em;font-size:75%;font-weight:700;line-height:1;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:0.25rem}
+        .badge-success{color:#fff;background-color:#28a745}
+        .badge-info{color:#fff;background-color:#17a2b8}
+        .badge-warning{color:#212529;background-color:#ffc107}
+        .table{width:100%;margin-bottom:1rem;background-color:transparent;border-collapse:collapse}
+        .table td,.table th{padding:0.5rem;vertical-align:top;border-top:1px solid #dee2e6}
+        .table thead th{vertical-align:bottom;border-bottom:2px solid #dee2e6}
+        .table-striped tbody tr:nth-of-type(odd){background-color:rgba(0,0,0,0.05)}
+        .progress{height:1rem;background-color:#e9ecef;border-radius:0.25rem;overflow:hidden}
+        .progress-bar{height:100%;background-color:#007bff;transition:width 0.6s ease}
+
+        /* Custom styles for Bundler App */
+        body {
+            padding-top: 70px;
+            padding-bottom: 80px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Header */
+        .navbar-brand {
+            font-weight: bold;
+            color: #007bff !important;
+        }
+
+        /* Content sections */
+        .content-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Main content */
+        .display-4 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* Feature cards */
+        .col-md-4 h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .col-md-4 p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Feature list */
+        .list-unstyled li {
+            padding: 8px 0;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            line-height: 60px;
+            background-color: #fff;
+            border-top: 1px solid #dee2e6;
+            padding: 0 15px;
+        }
+
+        /* Statistics cards */
+        .stat-card {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Live data display */
+        .live-data {
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+            margin: 1rem 0;
+        }
+
+        /* Sample content styling */
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .custom-control {
+            position: relative;
+            display: block;
+            min-height: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .custom-control-input {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+        }
+
+        .custom-control-label::before {
+            position: absolute;
+            top: 0.25rem;
+            left: -1.5rem;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            pointer-events: none;
+            content: "";
+            background-color: #fff;
+            border: #adb5bd solid 1px;
+            border-radius: 0.25rem;
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .custom-control-label::after {
+            position: absolute;
+            top: 0.25rem;
+            left: -1.5rem;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            content: "";
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 50% 50%;
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='m6.564.75-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+        }
+
+        /* Performance comparison styling */
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed #dee2e6;
+        }
+
+        .performance-stats {
+            font-size: 0.9rem;
+        }
+
+        .stat-row {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .improvement-stat {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .improvement-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .improvement-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+            background-color: transparent;
+        }
+
+        .btn-outline-success:hover {
+            color: #fff;
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        /* Fix Bootstrap missing styles */
+        .font-weight-bold {
+            font-weight: bold !important;
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem !important;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Sample images using CSS */
+        .sample-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .sample-image.landscape {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .sample-image.portrait {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            height: 300px;
+        }
+
+        /* Fix navigation highlighting */
+        .nav-link.active {
+            background-color: #e3f2fd !important;
+            color: #1976d2 !important;
+            border-radius: 4px;
+        }
+
+        /* Code comparison styles */
+        .code-comparison {
+            display: flex;
+            height: 400px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .code-header.original {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .code-header.bundled {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .code-content {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            padding: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .code-content.original {
+            background-color: #fefefe;
+        }
+
+        .code-content.bundled {
+            background-color: #f8f9fa;
+        }
+
+        /* Toggle switch styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #007bff;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Comparison slider styles */
+        .comparison-slider {
+            width: 100%;
+            height: 25px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .comparison-slider:hover {
+            opacity: 1;
+        }
+
+        .comparison-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+
+        .comparison-slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+
+        /* Network waterfall styles */
+        .waterfall-chart {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .waterfall-row {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .waterfall-row:last-child {
+            border-bottom: none;
+        }
+
+        .waterfall-file {
+            width: 120px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .waterfall-bar {
+            flex: 1;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 4px;
+            position: relative;
+            margin: 0 1rem;
+        }
+
+        .waterfall-progress {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .waterfall-progress.dns {
+            background: #ffc107;
+        }
+
+        .waterfall-progress.connect {
+            background: #fd7e14;
+        }
+
+        .waterfall-progress.download {
+            background: #28a745;
+        }
+
+        .waterfall-time {
+            width: 60px;
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        /* Page speed score styles */
+        .speed-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto;
+        }
+
+        .speed-score.excellent {
+            background: radial-gradient(circle, #28a745, #20c997);
+        }
+
+        .speed-score.good {
+            background: radial-gradient(circle, #ffc107, #fd7e14);
+        }
+
+        .speed-score.poor {
+            background: radial-gradient(circle, #dc3545, #c82333);
+        }
+
+        /* Settings panel styles */
+        .settings-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+        .settings-control {
+            min-width: 200px;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .code-comparison {
+                flex-direction: column;
+                height: 600px;
+            }
+            
+            .settings-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .settings-control {
+                min-width: 100%;
+            }
+        }
+
+        /* Additional responsive enhancements merged */
+        
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" href="#" onclick="showSection('home')">Bundler App</a>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark active" onclick="showSection('home')" data-section="home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" onclick="showSection('about')" data-section="about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" onclick="showSection('contact')" data-section="contact">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <!-- Home Section -->
+            <div id="home-section" class="content-section">
+                <div class="text-center">
+                    <h1 class="display-4">Welcome to ASP.NET Core Bundler</h1>
+                    <p class="lead">This application demonstrates efficient package management with bundling and minification.</p>
+                    
+                    <!-- Live Statistics -->
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <span class="stat-number" id="cssFiles">0</span>
+                                <span class="stat-label">CSS Files Bundled</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <span class="stat-number" id="jsFiles">0</span>
+                                <span class="stat-label">JS Files Bundled</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <span class="stat-number" id="compressionRatio">0%</span>
+                                <span class="stat-label">Compression Ratio</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-5">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">WebOptimizer</h3>
+                                    <p class="card-text">Runtime bundling and minification for optimal performance.</p>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">BuildBundlerMinifier</h3>
+                                    <p class="card-text">Build-time bundling with MSBuild integration.</p>
+                                    <span class="badge badge-info">Configured</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">NuGet Integration</h3>
+                                    <p class="card-text">Seamless package management with .NET ecosystem.</p>
+                                    <span class="badge badge-success">Available</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Bundle Data -->
+                    <div class="mt-5">
+                        <h3>Live Bundling Data</h3>
+                        <div class="live-data">
+                            <div><strong>Bundle Status:</strong> <span id="bundleStatus" class="text-success">✓ Active</span></div>
+                            <div><strong>Last Updated:</strong> <span id="lastUpdated">Loading...</span></div>
+                            <div><strong>Assets Loaded:</strong> <span id="assetsLoaded">0</span></div>
+                            <div><strong>Load Time:</strong> <span id="loadTime">0ms</span></div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="refreshBundleData()">Refresh Bundle Data</button>
+                            <button class="btn btn-info" onclick="simulateOptimization()">Simulate Optimization</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h3>Bundling Features</h3>
+                        <ul class="list-unstyled">
+                            <li>✓ CSS and JavaScript bundling</li>
+                            <li>✓ Minification for production</li>
+                            <li>✓ Source maps for debugging</li>
+                            <li>✓ Cache busting with versioning</li>
+                            <li>✓ Environment-based configuration</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sample Content Section -->
+                    <div class="mt-5">
+                        <h3>Sample Website Content</h3>
+                        <p class="lead">This section demonstrates rich content with various styling elements, images, and interactive components to showcase the bundling benefits.</p>
+                        
+                        <!-- Sample Images Gallery -->
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <div class="sample-image">
+                                    📸 Sample Image 1
+                                </div>
+                                <h6 class="text-center">Hero Banner</h6>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sample-image landscape">
+                                    🖼️ Sample Image 2
+                                </div>
+                                <h6 class="text-center">Product Showcase</h6>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sample-image portrait">
+                                    🎨 Sample Image 3
+                                </div>
+                                <h6 class="text-center">Profile Picture</h6>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">Rich Text Content</h5>
+                                        <p class="card-text">
+                                            This section demonstrates rich content with various styling elements and interactive components to showcase the bundling benefits. 
+                                            <strong>This text demonstrates</strong> various formatting options including <em>italics</em>, 
+                                            <u>underlines</u>, and <mark>highlighted text</mark>.
+                                        </p>
+                                        <p class="card-text text-muted">
+                                            When bundling is applied, all these styled elements maintain their appearance while reducing the overall file size 
+                                            and improving page load performance through optimized CSS and JavaScript delivery.
+                                        </p>
+                                        <button class="btn btn-primary" onclick="showAlert('Primary button clicked!')">Sample Button</button>
+                                        <button class="btn btn-outline-success ml-2" onclick="showAlert('Secondary button clicked!')">Secondary Action</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">Interactive Elements</h5>
+                                        <div class="form-group mb-3">
+                                            <label for="sampleInput">Sample Form Field:</label>
+                                            <input type="text" class="form-control" id="sampleInput" placeholder="Enter sample text" oninput="updateInputDisplay()" onchange="updateInputDisplay()">
+                                            <small class="text-muted">Type something to see it update below</small>
+                                            <div id="inputDisplay" class="mt-2 p-2 bg-light rounded">Your text will appear here...</div>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="sampleSelect">Sample Dropdown:</label>
+                                            <select class="form-control" id="sampleSelect" onchange="updateSelectDisplay()">
+                                                <option>Choose an option...</option>
+                                                <option value="1">Option 1</option>
+                                                <option value="2">Option 2</option>
+                                                <option value="3">Option 3</option>
+                                            </select>
+                                            <div id="selectDisplay" class="mt-2 p-2 bg-light rounded">Selected: None</div>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="sampleCheck" checked onchange="updateCheckboxDisplay()">
+                                            <label class="custom-control-label" for="sampleCheck">Enable feature</label>
+                                            <div id="checkboxDisplay" class="mt-2 p-2 bg-light rounded">Status: Enabled</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Styled Data Table</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead class="bg-primary text-white">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Product Name</th>
+                                                        <th>Category</th>
+                                                        <th>Price</th>
+                                                        <th>Stock</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td><strong>Premium Widget</strong></td>
+                                                        <td>Electronics</td>
+                                                        <td><span class="text-success">$299.99</span></td>
+                                                        <td>45 units</td>
+                                                        <td><span class="badge badge-success">In Stock</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td><strong>Advanced Component</strong></td>
+                                                        <td>Software</td>
+                                                        <td><span class="text-success">$149.99</span></td>
+                                                        <td>23 units</td>
+                                                        <td><span class="badge badge-warning">Low Stock</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td><strong>Basic Module</strong></td>
+                                                        <td>Hardware</td>
+                                                        <td><span class="text-success">$79.99</span></td>
+                                                        <td>0 units</td>
+                                                        <td><span class="badge badge-danger">Out of Stock</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Comparison Section -->
+                    <div class="mt-5">
+                        <h3>Performance Comparison: Before vs After Bundling</h3>
+                        <p class="lead">See the dramatic improvement in page load times and file sizes after implementing bundling and minification.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card border-danger">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="card-title mb-0">❌ BEFORE: Without Bundling</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="screenshot-placeholder bg-light border rounded p-4 text-center mb-3">
+                                            <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                                <div>
+                                                    <h6>📊 Network Tab Screenshot</h6>
+                                                    <div class="text-left mt-3">
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>bootstrap.css</span>
+                                                            <span class="text-danger">285 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>site.css</span>
+                                                            <span class="text-danger">67 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>custom.css</span>
+                                                            <span class="text-danger">34 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>bootstrap.js</span>
+                                                            <span class="text-danger">187 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>site.js</span>
+                                                            <span class="text-danger">43 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>utils.js</span>
+                                                            <span class="text-danger">29 KB</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="performance-stats">
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>Total File Size:</strong>
+                                                <span class="text-danger font-weight-bold">645 KB</span>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>HTTP Requests:</strong>
+                                                <span class="text-danger font-weight-bold">12 requests</span>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>Page Load Time:</strong>
+                                                <span class="text-danger font-weight-bold">3.8 seconds</span>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>First Paint:</strong>
+                                                <span class="text-danger font-weight-bold">2.1 seconds</span>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>DOM Ready:</strong>
+                                                <span class="text-danger font-weight-bold">3.2 seconds</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="card-title mb-0">✅ AFTER: With Bundling & Minification</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="screenshot-placeholder bg-light border rounded p-4 text-center mb-3">
+                                            <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                                <div>
+                                                    <h6>📊 Network Tab Screenshot</h6>
+                                                    <div class="text-left mt-3">
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>bundle.min.css</span>
+                                                            <span class="text-success">89 KB</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-bottom pb-1">
+                                                            <span>bundle.min.js</span>
+                                                            <span class="text-success">67 KB</span>
+                                                        </div>
+                                                        <div class="text-muted small mt-2">
+                                                            ✨ 10 files consolidated into 2 bundles
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="performance-stats">
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>Total File Size:</strong>
+                                                <span class="text-success font-weight-bold">156 KB</span>
+                                                <small class="text-muted">(76% smaller)</small>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>HTTP Requests:</strong>
+                                                <span class="text-success font-weight-bold">4 requests</span>
+                                                <small class="text-muted">(67% fewer)</small>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>Page Load Time:</strong>
+                                                <span class="text-success font-weight-bold">1.2 seconds</span>
+                                                <small class="text-muted">(68% faster)</small>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>First Paint:</strong>
+                                                <span class="text-success font-weight-bold">0.8 seconds</span>
+                                                <small class="text-muted">(62% faster)</small>
+                                            </div>
+                                            <div class="stat-row d-flex justify-content-between">
+                                                <strong>DOM Ready:</strong>
+                                                <span class="text-success font-weight-bold">1.0 seconds</span>
+                                                <small class="text-muted">(69% faster)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Summary -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h4>🚀 Performance Improvements Summary</h4>
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                <div class="improvement-stat">
+                                                    <div class="improvement-number">76%</div>
+                                                    <div class="improvement-label">Size Reduction</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="improvement-stat">
+                                                    <div class="improvement-number">68%</div>
+                                                    <div class="improvement-label">Faster Loading</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="improvement-stat">
+                                                    <div class="improvement-number">67%</div>
+                                                    <div class="improvement-label">Fewer Requests</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="improvement-stat">
+                                                    <div class="improvement-number">2.6s</div>
+                                                    <div class="improvement-label">Time Saved</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Controls Section -->
+                    <div class="mt-5">
+                        <h3>Advanced Bundling Controls</h3>
+                        <p class="lead">Interactive controls to demonstrate different bundling configurations and compare results.</p>
+                        
+                        <div class="settings-panel">
+                            <div class="settings-row">
+                                <div class="settings-label">
+                                    <strong>View Mode:</strong> Toggle between original and bundled version
+                                </div>
+                                <div class="settings-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="bundleToggle" checked onchange="toggleBundleMode()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span id="toggleLabel" class="ml-2">Bundled Version</span>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-row">
+                                <div class="settings-label">
+                                    <strong>Comparison Slider:</strong> Compare before/after performance
+                                </div>
+                                <div class="settings-control">
+                                    <input type="range" min="0" max="100" value="100" class="comparison-slider" id="comparisonSlider" oninput="updateComparison(this.value)">
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <small class="text-danger">Before (0%)</small>
+                                        <small class="text-success">After (100%)</small>
+                                    </div>
+                                    <div id="comparisonResult" class="mt-2 p-2 bg-light rounded text-center">
+                                        <strong>Current View: 100% Bundled (Optimal Performance)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-row">
+                                <div class="settings-label">
+                                    <strong>Bundling Strategy:</strong> Select bundling approach
+                                </div>
+                                <div class="settings-control">
+                                    <select class="form-control" id="bundlingStrategy" onchange="changeBundlingStrategy()">
+                                        <option value="optimal">Optimal - Automatic bundling</option>
+                                        <option value="aggressive">Aggressive - Maximum compression</option>
+                                        <option value="conservative">Conservative - Basic optimization</option>
+                                        <option value="none">None - No bundling</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-row">
+                                <div class="settings-label">
+                                    <strong>Minification Level:</strong> CSS and JS compression
+                                </div>
+                                <div class="settings-control">
+                                    <select class="form-control" id="minificationLevel" onchange="changeMinificationLevel()">
+                                        <option value="maximum">Maximum - Full minification</option>
+                                        <option value="standard">Standard - Balanced approach</option>
+                                        <option value="minimal">Minimal - Basic whitespace removal</option>
+                                        <option value="none">None - No minification</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code Comparison Section -->
+                    <div class="mt-5">
+                        <h3>Before vs After: Code Comparison</h3>
+                        <p class="lead">See the actual code transformation through bundling and minification.</p>
+                        
+                        <div class="code-comparison">
+                            <div class="code-panel">
+                                <div class="code-header original">
+                                    ❌ Original Code (Multiple Files)
+                                </div>
+                                <div class="code-content original" id="originalCode">
+/* bootstrap.css (285KB) */
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease-in-out;
+}
+
+/* site.css (67KB) */
+.navbar-brand {
+  font-weight: bold;
+  color: #007bff !important;
+}
+
+.content-section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* bootstrap.js (187KB) */
+(function() {
+  'use strict';
+  var Bootstrap = {
+    Alert: function(element) {
+      this.element = element;
+    },
+    Button: function(element) {
+      this.element = element;
+    },
+    // ... hundreds more lines
+  };
+  window.Bootstrap = Bootstrap;
+})();
+
+/* site.js (43KB) */
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Site initialized');
+  var navLinks = document.querySelectorAll('.nav-link');
+  // ... more functionality
+});
+                                </div>
+                            </div>
+                            <div class="code-panel">
+                                <div class="code-header bundled">
+                                    ✅ Bundled & Minified (Single File)
+                                </div>
+                                <div class="code-content bundled" id="bundledCode">
+/* bundle.min.css (89KB) - 76% smaller */
+.btn{display:inline-block;font-weight:400;line-height:1.5;color:#212529;text-align:center;text-decoration:none;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:transparent;border:1px solid transparent;padding:.375rem .75rem;font-size:1rem;border-radius:.375rem;transition:color .15s ease-in-out}.navbar-brand{font-weight:700;color:#007bff!important}.content-section{background-color:#fff;border-radius:8px;padding:2rem;margin-bottom:2rem;box-shadow:0 2px 4px rgba(0,0,0,.1)}
+
+/* bundle.min.js (67KB) - 73% smaller */
+!function(){"use strict";var a={Alert:function(a){this.element=a},Button:function(a){this.element=a}};window.Bootstrap=a}(),document.addEventListener("DOMContentLoaded",function(){console.log("Site initialized");document.querySelectorAll(".nav-link")});
+
+// All 10 files consolidated into 2 optimized bundles
+// Variables renamed: element→a, Bootstrap→a, etc.
+// Whitespace removed, comments stripped
+// Duplicate code eliminated
+// Unused functions removed via tree-shaking
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page Speed Scores Section -->
+                    <div class="mt-5">
+                        <h3>Page Speed Performance</h3>
+                        <p class="lead">Real-time performance metrics showing the impact of bundling and minification.</p>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h5>Original Version</h5>
+                                    <div class="speed-score poor" id="originalScore">
+                                        <span id="originalScoreValue">34</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">Google PageSpeed Score</small>
+                                        <div class="mt-2">
+                                            <span class="badge badge-danger">Slow</span>
+                                            <span class="badge badge-warning">Large Bundle</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h5>Current Configuration</h5>
+                                    <div class="speed-score excellent" id="currentScore">
+                                        <span id="currentScoreValue">89</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">Google PageSpeed Score</small>
+                                        <div class="mt-2">
+                                            <span class="badge badge-success">Fast</span>
+                                            <span class="badge badge-info">Optimized</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h5>Performance Gain</h5>
+                                    <div class="speed-score good" id="improvementScore">
+                                        <span id="improvementValue">+55</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">Points Improved</small>
+                                        <div class="mt-2">
+                                            <span class="badge badge-success">+162% Better</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Network Request Waterfall Section -->
+                    <div class="mt-5">
+                        <h3>Network Request Waterfall</h3>
+                        <p class="lead">Visual representation of network requests before and after bundling optimization.</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-danger">❌ Before Bundling (12 requests)</h5>
+                                <div class="waterfall-chart" id="originalWaterfall">
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">bootstrap.css</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 85%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">1.2s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">site.css</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 45%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.6s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">custom.css</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 25%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.3s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">bootstrap.js</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 95%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">1.4s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">site.js</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 35%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.4s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">utils.js</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 20%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.2s</div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <strong class="text-danger">Total Load Time: 3.8 seconds</strong>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="text-success">✅ After Bundling (2 requests)</h5>
+                                <div class="waterfall-chart" id="bundledWaterfall">
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">bundle.min.css</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 30%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.4s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file">bundle.min.js</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress download" style="width: 35%;"></div>
+                                        </div>
+                                        <div class="waterfall-time">0.5s</div>
+                                    </div>
+                                    <div class="waterfall-row">
+                                        <div class="waterfall-file text-muted">✨ 10 files eliminated</div>
+                                        <div class="waterfall-bar">
+                                            <div class="waterfall-progress" style="width: 0%; background: #e9ecef;"></div>
+                                        </div>
+                                        <div class="waterfall-time text-muted">---</div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <strong class="text-success">Total Load Time: 1.2 seconds</strong>
+                                    <br><small class="text-muted">(68% faster)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div id="about-section" class="content-section d-none">
+                <h2>About ASP.NET Core Bundler</h2>
+                <p class="lead">A comprehensive solution for asset optimization in web applications.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <h4>Technology Stack</h4>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Technology</th>
+                                    <th>Version</th>
+                                    <th>Purpose</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ASP.NET Core</td>
+                                    <td>7.0</td>
+                                    <td>Web Framework</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>WebOptimizer</td>
+                                    <td>3.0.384</td>
+                                    <td>Runtime Bundling</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>BuildBundlerMinifier</td>
+                                    <td>3.2.449</td>
+                                    <td>Build-time Bundling</td>
+                                    <td><span class="badge badge-info">Configured</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Bootstrap</td>
+                                    <td>5.2.3</td>
+                                    <td>UI Framework</td>
+                                    <td><span class="badge badge-success">Loaded</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Gulp</td>
+                                    <td>4.0.2</td>
+                                    <td>Task Automation</td>
+                                    <td><span class="badge badge-warning">Available</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Webpack</td>
+                                    <td>5.75.0</td>
+                                    <td>Module Bundling</td>
+                                    <td><span class="badge badge-warning">Available</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Performance Metrics</h4>
+                        <div class="p-3 border rounded">
+                            <div class="mb-3">
+                                <label>CSS Optimization</label>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 85%"></div>
+                                </div>
+                                <small class="text-muted">85% size reduction</small>
+                            </div>
+                            <div class="mb-3">
+                                <label>JavaScript Optimization</label>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 78%"></div>
+                                </div>
+                                <small class="text-muted">78% size reduction</small>
+                            </div>
+                            <div class="mb-3">
+                                <label>HTTP Requests</label>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 92%"></div>
+                                </div>
+                                <small class="text-muted">92% reduction</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <h4>Features & Benefits</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Development Features</h5>
+                            <ul>
+                                <li>Hot reload for instant feedback</li>
+                                <li>Source maps for debugging</li>
+                                <li>Automatic dependency resolution</li>
+                                <li>Error reporting and logging</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Production Optimizations</h5>
+                            <ul>
+                                <li>Minification and compression</li>
+                                <li>Tree shaking for unused code</li>
+                                <li>Cache busting with versioning</li>
+                                <li>CDN integration support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div id="contact-section" class="content-section d-none">
+                <h2>Contact & Documentation</h2>
+                <p class="lead">Get support and learn more about the bundling system.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h4>Quick Actions</h4>
+                        <div class="p-3 border rounded">
+                            <div class="mb-3">
+                                <button class="btn btn-primary btn-block" onclick="downloadBundleReport()">Download Bundle Report</button>
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-info btn-block" onclick="analyzeDependencies()">Analyze Dependencies</button>
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-success btn-block" onclick="generateSourceMaps()">Generate Source Maps</button>
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-warning btn-block" onclick="clearCache()">Clear Bundle Cache</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>System Information</h4>
+                        <div class="live-data">
+                            <div><strong>Environment:</strong> <span id="environment">Production</span></div>
+                            <div><strong>Bundle Version:</strong> <span id="bundleVersion">1.0.0</span></div>
+                            <div><strong>Cache Status:</strong> <span id="cacheStatus">Enabled</span></div>
+                            <div><strong>Optimization Level:</strong> <span id="optimizationLevel">Maximum</span></div>
+                            <div><strong>Memory Usage:</strong> <span id="memoryUsage">2.4 MB</span></div>
+                            <div><strong>Build Time:</strong> <span id="buildTime">1.2s</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <h4>Configuration Files</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">bundleconfig.json</h5>
+                                    <p class="card-text">Build-time bundling configuration</p>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showConfig('bundle')">View Config</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">package.json</h5>
+                                    <p class="card-text">NPM dependencies and scripts</p>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showConfig('package')">View Config</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">webpack.config.js</h5>
+                                    <p class="card-text">Webpack bundling settings</p>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showConfig('webpack')">View Config</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer text-muted">
+        <div class="container">
+            &copy; 2025 - Bundler App - <span id="footer-info">Assets bundled and optimized</span>
+        </div>
+    </footer>
+
+    <script>
+        // Bootstrap JavaScript - Minimal version for demo
+        (function() {
+            'use strict';
+            
+            console.log('Bootstrap JS loaded for Bundler App');
+            
+            // Simple navbar toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const togglers = document.querySelectorAll('.navbar-toggler');
+                togglers.forEach(function(toggler) {
+                    toggler.addEventListener('click', function() {
+                        const target = document.querySelector(this.getAttribute('data-target'));
+                        if (target) {
+                            target.classList.toggle('show');
+                        }
+                    });
+                });
+            });
+            
+        })();
+
+        // Bundler App JavaScript - Enhanced with navigation and data
+
+        // Global variables
+        let bundleData = {
+            cssFiles: 3,
+            jsFiles: 4,
+            compressionRatio: 73,
+            assetsLoaded: 7,
+            loadTime: 245
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Bundler App initialized with enhanced navigation');
+            
+            // Initialize all features
+            initializeNavigation();
+            initializeBundlingDemo();
+            updateLiveData();
+            startDataRefresh();
+        });
+
+        // Navigation functionality with content switching
+        function initializeNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    console.log('Navigation clicked:', this.textContent);
+                });
+            });
+        }
+
+        // Show specific content section - FIXED VERSION
+        function showSection(sectionName) {
+            console.log('Switching to section:', sectionName);
+            
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('d-none');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.classList.remove('d-none');
+                console.log('Successfully showed section:', sectionName);
+            } else {
+                console.error('Section not found:', sectionName + '-section');
+            }
+            
+            // Update navigation active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                const linkSection = link.getAttribute('data-section');
+                if (linkSection === sectionName) {
+                    link.classList.add('active');
+                    console.log('Updated active nav link for:', sectionName);
+                }
+            });
+        }
+
+        // Interactive element functions
+        function showAlert(message) {
+            alert(message);
+            console.log('Button clicked:', message);
+        }
+
+        function updateInputDisplay() {
+            const input = document.getElementById('sampleInput');
+            const display = document.getElementById('inputDisplay');
+            if (input && display) {
+                const value = input.value || 'Your text will appear here...';
+                display.textContent = 'You typed: ' + value;
+                console.log('Input updated:', value);
+            }
+        }
+
+        function updateSelectDisplay() {
+            const select = document.getElementById('sampleSelect');
+            const display = document.getElementById('selectDisplay');
+            if (select && display) {
+                const selectedValue = select.value;
+                const selectedText = select.options[select.selectedIndex].text;
+                display.textContent = 'Selected: ' + selectedText;
+                console.log('Select updated:', selectedValue, selectedText);
+            }
+        }
+
+        function updateCheckboxDisplay() {
+            const checkbox = document.getElementById('sampleCheck');
+            const display = document.getElementById('checkboxDisplay');
+            if (checkbox && display) {
+                const isChecked = checkbox.checked;
+                display.textContent = 'Status: ' + (isChecked ? 'Enabled' : 'Disabled');
+                console.log('Checkbox updated:', isChecked);
+            }
+        }
+
+        // Advanced bundling control functions
+        function toggleBundleMode() {
+            const toggle = document.getElementById('bundleToggle');
+            const label = document.getElementById('toggleLabel');
+            const isChecked = toggle.checked;
+            
+            label.textContent = isChecked ? 'Bundled Version' : 'Original Version';
+            
+            // Update performance metrics based on mode
+            const currentScoreElement = document.getElementById('currentScoreValue');
+            const currentScoreContainer = document.getElementById('currentScore');
+            
+            if (isChecked) {
+                // Bundled mode
+                currentScoreElement.textContent = '89';
+                currentScoreContainer.className = 'speed-score excellent';
+                console.log('Switched to bundled version');
+            } else {
+                // Original mode
+                currentScoreElement.textContent = '34';
+                currentScoreContainer.className = 'speed-score poor';
+                console.log('Switched to original version');
+            }
+            
+            // Update comparison slider to match
+            const slider = document.getElementById('comparisonSlider');
+            slider.value = isChecked ? 100 : 0;
+            updateComparison(slider.value);
+        }
+
+        function updateComparison(value) {
+            const result = document.getElementById('comparisonResult');
+            const percentage = parseInt(value);
+            
+            // Calculate interpolated values
+            const loadTime = 3.8 - (2.6 * percentage / 100); // 3.8s to 1.2s
+            const fileSize = 645 - (489 * percentage / 100); // 645KB to 156KB
+            const requests = 12 - (8 * percentage / 100); // 12 to 4 requests
+            const score = 34 + (55 * percentage / 100); // 34 to 89
+            
+            let status, statusClass;
+            if (percentage < 25) {
+                status = 'Poor Performance - No bundling';
+                statusClass = 'text-danger';
+            } else if (percentage < 50) {
+                status = 'Basic Optimization - Minimal bundling';
+                statusClass = 'text-warning';
+            } else if (percentage < 75) {
+                status = 'Good Performance - Standard bundling';
+                statusClass = 'text-info';
+            } else {
+                status = 'Optimal Performance - Full bundling';
+                statusClass = 'text-success';
+            }
+            
+            result.innerHTML = `
+                <div class="mb-2"><strong class="${statusClass}">${status}</strong></div>
+                <div class="row">
+                    <div class="col">Speed Score: <strong>${Math.round(score)}</strong></div>
+                    <div class="col">Load Time: <strong>${loadTime.toFixed(1)}s</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col">File Size: <strong>${Math.round(fileSize)}KB</strong></div>
+                    <div class="col">Requests: <strong>${Math.round(requests)}</strong></div>
+                </div>
+            `;
+            
+            // Update current score display
+            const currentScoreValue = document.getElementById('currentScoreValue');
+            const currentScoreContainer = document.getElementById('currentScore');
+            currentScoreValue.textContent = Math.round(score);
+            
+            if (score < 50) {
+                currentScoreContainer.className = 'speed-score poor';
+            } else if (score < 75) {
+                currentScoreContainer.className = 'speed-score good';
+            } else {
+                currentScoreContainer.className = 'speed-score excellent';
+            }
+            
+            console.log(`Comparison updated: ${percentage}% bundled, Score: ${Math.round(score)}`);
+        }
+
+        function changeBundlingStrategy() {
+            const strategy = document.getElementById('bundlingStrategy').value;
+            const currentScore = document.getElementById('currentScoreValue');
+            const currentScoreContainer = document.getElementById('currentScore');
+            
+            let score, description;
+            switch (strategy) {
+                case 'optimal':
+                    score = 89;
+                    description = 'Automatic bundling with intelligent splitting';
+                    currentScoreContainer.className = 'speed-score excellent';
+                    break;
+                case 'aggressive':
+                    score = 95;
+                    description = 'Maximum compression and optimization';
+                    currentScoreContainer.className = 'speed-score excellent';
+                    break;
+                case 'conservative':
+                    score = 72;
+                    description = 'Basic bundling with minimal changes';
+                    currentScoreContainer.className = 'speed-score good';
+                    break;
+                case 'none':
+                    score = 34;
+                    description = 'No bundling - original file structure';
+                    currentScoreContainer.className = 'speed-score poor';
+                    break;
+            }
+            
+            currentScore.textContent = score;
+            
+            // Update code display based on strategy
+            updateCodeDisplay(strategy);
+            
+            alert(`Bundling Strategy Changed!\n\nStrategy: ${strategy}\nNew Score: ${score}\nDescription: ${description}`);
+            console.log(`Bundling strategy changed to: ${strategy}, Score: ${score}`);
+        }
+
+        function changeMinificationLevel() {
+            const level = document.getElementById('minificationLevel').value;
+            const bundledCode = document.getElementById('bundledCode');
+            
+            let codeContent;
+            switch (level) {
+                case 'maximum':
+                    codeContent = `/* bundle.min.css (89KB) - 76% smaller */
+.btn{display:inline-block;font-weight:400;line-height:1.5;color:#212529;text-align:center;text-decoration:none;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:transparent;border:1px solid transparent;padding:.375rem .75rem;font-size:1rem;border-radius:.375rem;transition:color .15s ease-in-out}.navbar-brand{font-weight:700;color:#007bff!important}
+
+/* bundle.min.js (67KB) - 73% smaller */
+!function(){"use strict";var a={Alert:function(a){this.element=a},Button:function(a){this.element=a}};window.Bootstrap=a}(),document.addEventListener("DOMContentLoaded",function(){console.log("Site initialized")});
+
+// Variables renamed, whitespace removed, comments stripped`;
+                    break;
+                case 'standard':
+                    codeContent = `/* bundle.css (125KB) - 61% smaller */
+.btn {display: inline-block;font-weight: 400;line-height: 1.5;color: #212529;text-align: center;text-decoration: none;vertical-align: middle;cursor: pointer;background-color: transparent;border: 1px solid transparent;padding: 0.375rem 0.75rem;font-size: 1rem;border-radius: 0.375rem;transition: color 0.15s ease-in-out;}
+.navbar-brand {font-weight: bold;color: #007bff !important;}
+
+/* bundle.js (98KB) - 58% smaller */
+(function() {
+  "use strict";
+  var Bootstrap = {Alert: function(element) {this.element = element;},Button: function(element) {this.element = element;}};
+  window.Bootstrap = Bootstrap;
+})();
+document.addEventListener("DOMContentLoaded", function() {console.log("Site initialized");});
+
+// Whitespace reduced, some variable names shortened`;
+                    break;
+                case 'minimal':
+                    codeContent = `/* bundle.css (189KB) - 41% smaller */
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease-in-out;
+}
+
+/* bundle.js (156KB) - 33% smaller */
+(function() {
+  'use strict';
+  var Bootstrap = {
+    Alert: function(element) {
+      this.element = element;
+    },
+    Button: function(element) {
+      this.element = element;
+    }
+  };
+  window.Bootstrap = Bootstrap;
+})();
+
+// Only extra whitespace removed`;
+                    break;
+                case 'none':
+                    codeContent = `/* No minification applied */
+/* bootstrap.css (285KB) - Original size */
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease-in-out;
+}
+
+/* site.css (67KB) - Original size */
+.navbar-brand {
+  font-weight: bold;
+  color: #007bff !important;
+}
+
+/* All comments and formatting preserved */`;
+                    break;
+            }
+            
+            bundledCode.textContent = codeContent;
+            
+            alert(`Minification Level Changed!\n\nLevel: ${level}\nThe bundled code display has been updated to show the ${level} minification result.`);
+            console.log(`Minification level changed to: ${level}`);
+        }
+
+        function updateCodeDisplay(strategy) {
+            const originalCode = document.getElementById('originalCode');
+            const bundledCode = document.getElementById('bundledCode');
+            
+            if (strategy === 'none') {
+                // Show original code in both panels
+                bundledCode.textContent = originalCode.textContent;
+            } else {
+                // Update based on current minification level
+                changeMinificationLevel();
+            }
+        }
+
+
+        // Bundling demonstration functionality
+        function initializeBundlingDemo() {
+            // Add bundling status indicator
+            const statusElement = document.createElement('div');
+            statusElement.id = 'bundling-status';
+            statusElement.innerHTML = '<small class="text-success">✓ Assets bundled and minified</small>';
+            statusElement.style.position = 'fixed';
+            statusElement.style.bottom = '70px';
+            statusElement.style.right = '10px';
+            statusElement.style.background = 'rgba(255, 255, 255, 0.95)';
+            statusElement.style.padding = '8px 12px';
+            statusElement.style.borderRadius = '4px';
+            statusElement.style.border = '1px solid #ddd';
+            statusElement.style.cursor = 'pointer';
+            statusElement.style.zIndex = '1000';
+            statusElement.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            
+            document.body.appendChild(statusElement);
+            
+            // Show bundling info on click
+            statusElement.addEventListener('click', function() {
+                showBundlingInfo();
+            });
+        }
+
+        // Update live data displays
+        function updateLiveData() {
+            // Update statistics
+            document.getElementById('cssFiles').textContent = bundleData.cssFiles;
+            document.getElementById('jsFiles').textContent = bundleData.jsFiles;
+            document.getElementById('compressionRatio').textContent = bundleData.compressionRatio + '%';
+            
+            // Update live bundle data
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+            document.getElementById('assetsLoaded').textContent = bundleData.assetsLoaded;
+            document.getElementById('loadTime').textContent = bundleData.loadTime + 'ms';
+            
+            // Update system info
+            document.getElementById('environment').textContent = window.location.hostname.includes('localhost') ? 'Development' : 'Production';
+            document.getElementById('bundleVersion').textContent = '1.0.0';
+            document.getElementById('cacheStatus').textContent = 'Enabled';
+            document.getElementById('optimizationLevel').textContent = 'Maximum';
+            document.getElementById('memoryUsage').textContent = (Math.random() * 3 + 1).toFixed(1) + ' MB';
+            document.getElementById('buildTime').textContent = (Math.random() * 2 + 0.5).toFixed(1) + 's';
+        }
+
+        // Auto-refresh data every 5 seconds
+        function startDataRefresh() {
+            setInterval(() => {
+                // Simulate slight variations in data
+                bundleData.loadTime = Math.floor(Math.random() * 100 + 200);
+                bundleData.compressionRatio = Math.floor(Math.random() * 10 + 70);
+                updateLiveData();
+            }, 5000);
+        }
+
+        // Refresh bundle data manually
+        function refreshBundleData() {
+            bundleData.loadTime = Math.floor(Math.random() * 200 + 150);
+            bundleData.assetsLoaded = Math.floor(Math.random() * 3 + 6);
+            updateLiveData();
+            
+            // Show feedback
+            const status = document.getElementById('bundleStatus');
+            status.innerHTML = '<span class="text-info">↻ Refreshing...</span>';
+            setTimeout(() => {
+                status.innerHTML = '<span class="text-success">✓ Updated</span>';
+            }, 1000);
+            
+            console.log('Bundle data refreshed:', bundleData);
+        }
+
+        // Simulate optimization
+        function simulateOptimization() {
+            bundleData.compressionRatio = Math.min(95, bundleData.compressionRatio + Math.floor(Math.random() * 10 + 5));
+            bundleData.loadTime = Math.max(100, bundleData.loadTime - Math.floor(Math.random() * 50 + 20));
+            updateLiveData();
+            
+            alert('Optimization completed! Compression improved to ' + bundleData.compressionRatio + '%');
+            console.log('Optimization simulated:', bundleData);
+        }
+
+        // Show bundling information
+        function showBundlingInfo() {
+            const info = {
+                webOptimizer: 'Runtime bundling enabled',
+                buildBundler: 'Build-time minification configured',
+                cacheControl: 'Cache busting with versioning',
+                environment: document.location.hostname.includes('localhost') ? 'Development' : 'Production',
+                totalAssets: bundleData.cssFiles + bundleData.jsFiles,
+                compressionRatio: bundleData.compressionRatio + '%'
+            };
+            
+            console.group('Bundling Configuration');
+            Object.keys(info).forEach(key => {
+                console.log(`${key}: ${info[key]}`);
+            });
+            console.groupEnd();
+            
+            alert('Bundling information logged to console. Press F12 to view detailed stats.');
+        }
+
+        // Contact section functions
+        function downloadBundleReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                bundleData: bundleData,
+                performance: {
+                    cssOptimization: '85%',
+                    jsOptimization: '78%',
+                    httpReduction: '92%'
+                }
+            };
+            
+            console.log('Bundle Report:', report);
+            alert('Bundle report generated and logged to console.');
+        }
+
+        function analyzeDependencies() {
+            const dependencies = [
+                'Bootstrap 5.2.3',
+                'ASP.NET Core 7.0',
+                'WebOptimizer 3.0.384',
+                'BuildBundlerMinifier 3.2.449'
+            ];
+            
+            console.log('Dependencies Analysis:', dependencies);
+            alert('Dependency analysis complete. Found ' + dependencies.length + ' main dependencies.');
+        }
+
+        function generateSourceMaps() {
+            console.log('Generating source maps for debugging...');
+            setTimeout(() => {
+                alert('Source maps generated successfully!');
+                console.log('Source maps available for debugging.');
+            }, 1000);
+        }
+
+        function clearCache() {
+            console.log('Clearing bundle cache...');
+            setTimeout(() => {
+                bundleData.loadTime = Math.floor(Math.random() * 100 + 300);
+                updateLiveData();
+                alert('Bundle cache cleared. Assets will be regenerated on next request.');
+            }, 500);
+        }
+
+        function showConfig(type) {
+            const configs = {
+                bundle: 'bundleconfig.json - Build-time bundling rules',
+                package: 'package.json - NPM dependencies and scripts',
+                webpack: 'webpack.config.js - Module bundling configuration'
+            };
+            
+            alert('Configuration: ' + configs[type]);
+            console.log('Viewing configuration:', type);
+        }
+
+        // Utility functions for bundling
+        window.BundlerApp = {
+            version: '1.0.0',
+            getBundleInfo: function() {
+                return {
+                    css: ['site.css', 'bootstrap.min.css'],
+                    js: ['site.js', 'bootstrap.min.js'],
+                    bundled: true,
+                    minified: window.location.hostname !== 'localhost',
+                    data: bundleData
+                };
+            },
+            showSection: showSection,
+            refreshData: refreshBundleData
+        };
+
+        // Initialize page
+        console.log('Enhanced Bundler App loaded with navigation and live data');
+    </script>
+</body>
+</html>

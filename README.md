@@ -2,6 +2,14 @@
 
 A comprehensive bundling and minification solution for ASP.NET Core applications, featuring multiple bundling strategies and build tools integration.
 
+# 🚀 Live page
+
+**Bundlerminify**- https://reaishma.github.io/Bundlerminify/
+
+## Developer 
+
+**Reaishma N**
+
 ## Features
 
 ### Bundling & Minification

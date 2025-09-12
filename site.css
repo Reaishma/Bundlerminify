@@ -1,0 +1,68 @@
+/* Custom styles for Bundler App */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Header */
+.navbar-brand {
+    font-weight: bold;
+    color: #007bff !important;
+}
+
+/* Main content */
+.display-4 {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Feature cards */
+.col-md-4 h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.col-md-4 p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Feature list */
+.list-unstyled li {
+    padding: 8px 0;
+    color: #28a745;
+    font-weight: 500;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+/* Bundling info styles */
+.bundling-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

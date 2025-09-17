@@ -2,6 +2,8 @@
 
 A comprehensive bundling and minification solution for ASP.NET Core applications, featuring multiple bundling strategies and build tools integration.The project serves as a showcase for different bundling strategies including build-time and runtime optimization techniques for CSS and JavaScript files.
 
+![Overview](https://github.com/Reaishma/Bundlerminify/blob/main/chrome_screenshot_Sep%2016%2C%202025%2010_33_49%20AM%20GMT%2B05_30.png)
+
 # 🚀 Live page
 
 **Bundlerminify**- https://reaishma.github.io/Bundlerminify/
